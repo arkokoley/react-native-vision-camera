@@ -1,7 +1,9 @@
+import type { SkCanvas, SkPaint } from '@shopify/react-native-skia';
+
 /**
  * A single frame, as seen by the camera.
  */
-export interface Frame {
+export interface Frame extends SkCanvas {
   /**
    * Whether the underlying buffer is still valid or not. The buffer will be released after the frame processor returns, or `close()` is called.
    */
@@ -46,4 +48,11 @@ export interface Frame {
    * ```
    */
   close(): void;
+
+  /**
+   * Renders the Frame to the screen.
+   *
+   * @param paint (Optional) A Paint object to use to draw the Frame with. For example, this can contain a Shader (ImageFilter)
+   */
+  render: (paint?: SkPaint) => void;
 }

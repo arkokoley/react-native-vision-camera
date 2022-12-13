@@ -28,12 +28,13 @@ Pod::Spec.new do |s|
 
   s.pod_target_xcconfig = {
     "USE_HEADERMAP" => "YES",
-    "HEADER_SEARCH_PATHS" => "\"$(PODS_TARGET_SRCROOT)/ReactCommon\" \"$(PODS_TARGET_SRCROOT)\" \"$(PODS_ROOT)/RCT-Folly\" \"$(PODS_ROOT)/boost\" \"$(PODS_ROOT)/boost-for-react-native\" \"$(PODS_ROOT)/DoubleConversion\" \"$(PODS_ROOT)/Headers/Private/React-Core\" "
+    'GCC_PREPROCESSOR_DEFINITIONS' => '$(inherited) SK_GL=1 SK_METAL=1',
+    "HEADER_SEARCH_PATHS" => "\"$(PODS_TARGET_SRCROOT)/ReactCommon\" \"$(PODS_TARGET_SRCROOT)\" \"$(PODS_ROOT)/RCT-Folly\" \"$(PODS_ROOT)/boost\" \"$(PODS_ROOT)/boost-for-react-native\" \"$(PODS_ROOT)/DoubleConversion\" \"$(PODS_ROOT)/Headers/Private/React-Core\" \"$(PODS_ROOT)/Headers/Public/react-native-skia/include\" \"$(PODS_ROOT)/Headers/Public/react-native-skia\" "
   }
   s.compiler_flags = folly_compiler_flags + ' ' + boost_compiler_flags
   s.xcconfig = {
     "CLANG_CXX_LANGUAGE_STANDARD" => "c++17",
-    "HEADER_SEARCH_PATHS" => "\"$(PODS_ROOT)/boost\" \"$(PODS_ROOT)/boost-for-react-native\" \"$(PODS_ROOT)/glog\" \"$(PODS_ROOT)/RCT-Folly\" \"${PODS_ROOT}/Headers/Public/React-hermes\" \"${PODS_ROOT}/Headers/Public/hermes-engine\"",
+    "HEADER_SEARCH_PATHS" => "\"$(PODS_ROOT)/boost\" \"$(PODS_ROOT)/boost-for-react-native\" \"$(PODS_ROOT)/glog\" \"$(PODS_ROOT)/RCT-Folly\" \"${PODS_ROOT}/Headers/Public/React-hermes\" \"${PODS_ROOT}/Headers/Public/hermes-engine\" \"$(PODS_ROOT)/Headers/Public/react-native-skia/include\" \"$(PODS_ROOT)/Headers/Public/react-native-skia\" ",
     "OTHER_CFLAGS" => "$(inherited)" + " " + folly_flags
   }
 
@@ -44,6 +45,7 @@ Pod::Spec.new do |s|
   s.source_files = [
     "ios/**/*.{m,mm,swift}",
     "ios/CameraBridge.h",
+    "ios/Skia Render Layer/PreviewSkiaView.h",
     "ios/Frame Processor/Frame.h",
     "ios/Frame Processor/FrameProcessorCallback.h",
     "ios/Frame Processor/FrameProcessorRuntimeManager.h",
@@ -64,4 +66,5 @@ Pod::Spec.new do |s|
   s.dependency "React-callinvoker"
   s.dependency "React"
   s.dependency "React-Core"
+  s.dependency "react-native-skia"
 end

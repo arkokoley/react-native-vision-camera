@@ -19,14 +19,26 @@
 #import "JSConsoleHelper.h"
 #import <ReactCommon/RCTTurboModule.h>
 
+#import "RNSkPlatformContext.h"
+#import "RNSkiOSPlatformContext.h"
+#import <JsiSkCanvas.h>
+
 FrameProcessorCallback convertJSIFunctionToFrameProcessorCallback(jsi::Runtime& runtime, const jsi::Function& value) {
   __block auto cb = value.getFunction(runtime);
 
-  return ^(Frame* frame) {
-
-    auto frameHostObject = std::make_shared<FrameHostObject>(frame);
+  std::shared_ptr<RNSkia::RNSkPlatformContext> platformContext = std::make_shared<RNSkia::RNSkiOSPlatformContext>(&runtime, RCTBridge.currentBridge.jsCallInvoker);
+  
+  auto canvasHostObject = std::make_shared<RNSkia::JsiSkCanvas>(platformContext);
+  
+  return ^(Frame* frame, void* skCanvas) {
+    canvasHostObject->setCanvas((SkCanvas*)skCanvas);
+    auto frameHostObject = std::make_shared<FrameHostObject>(frame,
+                                                             canvasHostObject);
+    
     try {
-      cb.callWithThis(runtime, cb, jsi::Object::createFromHostObject(runtime, frameHostObject));
+      cb.callWithThis(runtime,
+                      cb,
+                      jsi::Object::createFromHostObject(runtime, frameHostObject));
     } catch (jsi::JSError& jsError) {
       auto stack = std::regex_replace(jsError.getStack(), std::regex("\n"), "\n    ");
       auto message = [NSString stringWithFormat:@"Frame Processor threw an error: %s\nIn: %s", jsError.getMessage().c_str(), stack.c_str()];
